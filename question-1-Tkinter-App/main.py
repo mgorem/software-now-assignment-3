@@ -27,6 +27,7 @@ class DrawingApp:
         self.clear_button = Button(self._root, text="Clear", command=self.clear_screen)
         self.clear_button.pack(side=tk.LEFT, padx=10)
 
+    # Methods demonstrating encapsulation - draw shapes, clear canvas
     # Function to draw a circle using Turtle
     def draw_circle(self):
         self.t.circle(50)
@@ -34,13 +35,6 @@ class DrawingApp:
     # Function to remove the canvas
     def clear_screen(self):
         self.t.clear()
-
-# Running the app
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = DrawingApp(root)
-    root.mainloop()
-
 
 
 # Function to implement object detection using OpenCV
@@ -102,3 +96,27 @@ class ObjectDetectionMixin:
                 cv2.putText(frame, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
         return frame
+    
+    # Main App to combine functionality
+    # class inheritance - integrating drawing and object detection
+class DrawingAndDetectionApp(DrawingApp, ObjectDetectionMixin):
+    def __init__(self, root):
+        DrawingApp.__init__(self, root)
+        ObjectDetectionMixin.load_model(self)
+
+        # Buttons for object detection
+        self.start_button = Button(self._root, text="Start Object Detection", command=self.start_detection)
+        self.start_button.pack(side=tk.LEFT, padx=10)
+
+        self.stop_button = Button(self._root, text="Stop Object Detection", command=self.stop_detection)
+        self.stop_button.pack(side=tk.LEFT, padx=10)
+
+        # Display video in feed
+        self.video_label = tk.Label(self._root)
+        self.video_label.pack(side=tk.RIGHT, padx=20, pady=10)
+
+# Start Application
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = DrawingAndDetectionApp(root)
+    root.mainloop()
